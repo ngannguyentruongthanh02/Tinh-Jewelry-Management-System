@@ -1,0 +1,140 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\Ngan\\TMDT\\TinhJewelry\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{8746614B-71C9-3748-783F-74B485745FF2}|TinhJewelry.ssmssqlproj|D:\\Ngan\\TMDT\\TinhJewelry\\View.sql||{B5A506EB-11BE-4782-9A18-21265C2CA0B4}",
+      "RelativeMoniker": "D:0:0:{8746614B-71C9-3748-783F-74B485745FF2}|TinhJewelry.ssmssqlproj|solutionrelative:View.sql||{B5A506EB-11BE-4782-9A18-21265C2CA0B4}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8746614B-71C9-3748-783F-74B485745FF2}|TinhJewelry.ssmssqlproj|D:\\Ngan\\TMDT\\TinhJewelry\\Function.sql||{B5A506EB-11BE-4782-9A18-21265C2CA0B4}",
+      "RelativeMoniker": "D:0:0:{8746614B-71C9-3748-783F-74B485745FF2}|TinhJewelry.ssmssqlproj|solutionrelative:Function.sql||{B5A506EB-11BE-4782-9A18-21265C2CA0B4}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8746614B-71C9-3748-783F-74B485745FF2}|TinhJewelry.ssmssqlproj|D:\\Ngan\\TMDT\\TinhJewelry\\Trigger.sql||{B5A506EB-11BE-4782-9A18-21265C2CA0B4}",
+      "RelativeMoniker": "D:0:0:{8746614B-71C9-3748-783F-74B485745FF2}|TinhJewelry.ssmssqlproj|solutionrelative:Trigger.sql||{B5A506EB-11BE-4782-9A18-21265C2CA0B4}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8746614B-71C9-3748-783F-74B485745FF2}|TinhJewelry.ssmssqlproj|D:\\Ngan\\TMDT\\TinhJewelry\\Store_Procedure.sql||{B5A506EB-11BE-4782-9A18-21265C2CA0B4}",
+      "RelativeMoniker": "D:0:0:{8746614B-71C9-3748-783F-74B485745FF2}|TinhJewelry.ssmssqlproj|solutionrelative:Store_Procedure.sql||{B5A506EB-11BE-4782-9A18-21265C2CA0B4}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8746614B-71C9-3748-783F-74B485745FF2}|TinhJewelry.ssmssqlproj|D:\\Ngan\\TMDT\\TinhJewelry\\TestTrigger.sql||{B5A506EB-11BE-4782-9A18-21265C2CA0B4}",
+      "RelativeMoniker": "D:0:0:{8746614B-71C9-3748-783F-74B485745FF2}|TinhJewelry.ssmssqlproj|solutionrelative:TestTrigger.sql||{B5A506EB-11BE-4782-9A18-21265C2CA0B4}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8746614B-71C9-3748-783F-74B485745FF2}|TinhJewelry.ssmssqlproj|D:\\Ngan\\TMDT\\TinhJewelry\\Insert.sql||{B5A506EB-11BE-4782-9A18-21265C2CA0B4}",
+      "RelativeMoniker": "D:0:0:{8746614B-71C9-3748-783F-74B485745FF2}|TinhJewelry.ssmssqlproj|solutionrelative:Insert.sql||{B5A506EB-11BE-4782-9A18-21265C2CA0B4}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8746614B-71C9-3748-783F-74B485745FF2}|TinhJewelry.ssmssqlproj|D:\\Ngan\\TMDT\\TinhJewelry\\tables.sql||{B5A506EB-11BE-4782-9A18-21265C2CA0B4}",
+      "RelativeMoniker": "D:0:0:{8746614B-71C9-3748-783F-74B485745FF2}|TinhJewelry.ssmssqlproj|solutionrelative:tables.sql||{B5A506EB-11BE-4782-9A18-21265C2CA0B4}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8746614B-71C9-3748-783F-74B485745FF2}|TinhJewelry.ssmssqlproj|D:\\Ngan\\TMDT\\TinhJewelry\\Database.sql||{B5A506EB-11BE-4782-9A18-21265C2CA0B4}",
+      "RelativeMoniker": "D:0:0:{8746614B-71C9-3748-783F-74B485745FF2}|TinhJewelry.ssmssqlproj|solutionrelative:Database.sql||{B5A506EB-11BE-4782-9A18-21265C2CA0B4}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "View.sql - (local).TinhJewelryDB (DESKTOP-BNIE566\\THUNGUYEN (66))",
+              "DocumentMoniker": "D:\\Ngan\\TMDT\\TinhJewelry\\View.sql",
+              "RelativeDocumentMoniker": "View.sql",
+              "ToolTip": "View.sql - (local).TinhJewelryDB (DESKTOP-BNIE566\\THUNGUYEN (66))",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000826|",
+              "WhenOpened": "2026-11-02T13:33:50.211Z",
+              "EditorCaption": " - (local).TinhJewelryDB (DESKTOP-BNIE566\\THUNGUYEN (66))"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Function.sql - (local).TinhJewelryDB (DESKTOP-BNIE566\\THUNGUYEN (62))",
+              "DocumentMoniker": "D:\\Ngan\\TMDT\\TinhJewelry\\Function.sql",
+              "RelativeDocumentMoniker": "Function.sql",
+              "ToolTip": "Function.sql - (local).TinhJewelryDB (DESKTOP-BNIE566\\THUNGUYEN (62))",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000826|",
+              "WhenOpened": "2026-11-02T13:28:16.548Z",
+              "EditorCaption": " - (local).TinhJewelryDB (DESKTOP-BNIE566\\THUNGUYEN (62))"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "TestTrigger.sql - (local).TinhJewelryDB (DESKTOP-BNIE566\\THUNGUYEN (61))",
+              "DocumentMoniker": "D:\\Ngan\\TMDT\\TinhJewelry\\TestTrigger.sql",
+              "RelativeDocumentMoniker": "TestTrigger.sql",
+              "ToolTip": "TestTrigger.sql - (local).TinhJewelryDB (DESKTOP-BNIE566\\THUNGUYEN (61))",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000826|",
+              "WhenOpened": "2026-11-02T13:17:23.21Z",
+              "EditorCaption": " - (local).TinhJewelryDB (DESKTOP-BNIE566\\THUNGUYEN (61))"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Store_Procedure.sql - (local).TinhJewelryDB (DESKTOP-BNIE566\\THUNGUYEN (59))",
+              "DocumentMoniker": "D:\\Ngan\\TMDT\\TinhJewelry\\Store_Procedure.sql",
+              "RelativeDocumentMoniker": "Store_Procedure.sql",
+              "ToolTip": "Store_Procedure.sql - (local).TinhJewelryDB (DESKTOP-BNIE566\\THUNGUYEN (59))",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000826|",
+              "WhenOpened": "2026-11-02T11:35:38.404Z",
+              "EditorCaption": " - (local).TinhJewelryDB (DESKTOP-BNIE566\\THUNGUYEN (59))"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Trigger.sql - (local).TinhJewelryDB (DESKTOP-BNIE566\\THUNGUYEN (64))",
+              "DocumentMoniker": "D:\\Ngan\\TMDT\\TinhJewelry\\Trigger.sql",
+              "RelativeDocumentMoniker": "Trigger.sql",
+              "ToolTip": "Trigger.sql - (local).TinhJewelryDB (DESKTOP-BNIE566\\THUNGUYEN (64))",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000826|",
+              "WhenOpened": "2026-11-02T11:42:47.843Z",
+              "EditorCaption": " - (local).TinhJewelryDB (DESKTOP-BNIE566\\THUNGUYEN (64))"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "Insert.sql - (local).TinhJewelryDB (DESKTOP-BNIE566\\THUNGUYEN (68))",
+              "DocumentMoniker": "D:\\Ngan\\TMDT\\TinhJewelry\\Insert.sql",
+              "RelativeDocumentMoniker": "Insert.sql",
+              "ToolTip": "Insert.sql - (local).TinhJewelryDB (DESKTOP-BNIE566\\THUNGUYEN (68))",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000826|",
+              "WhenOpened": "2026-11-02T11:22:57.804Z",
+              "EditorCaption": " - (local).TinhJewelryDB (DESKTOP-BNIE566\\THUNGUYEN (68))"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "tables.sql - (local).TinhJewelryDB (DESKTOP-BNIE566\\THUNGUYEN (80))",
+              "DocumentMoniker": "D:\\Ngan\\TMDT\\TinhJewelry\\tables.sql",
+              "RelativeDocumentMoniker": "tables.sql",
+              "ToolTip": "tables.sql - (local).TinhJewelryDB (DESKTOP-BNIE566\\THUNGUYEN (80))",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000826|",
+              "WhenOpened": "2026-11-02T11:18:26.156Z",
+              "EditorCaption": " - (local).TinhJewelryDB (DESKTOP-BNIE566\\THUNGUYEN (80))"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "Database.sql - (local).TinhJewelryDB (DESKTOP-BNIE566\\THUNGUYEN (73))",
+              "DocumentMoniker": "D:\\Ngan\\TMDT\\TinhJewelry\\Database.sql",
+              "RelativeDocumentMoniker": "Database.sql",
+              "ToolTip": "Database.sql - (local).TinhJewelryDB (DESKTOP-BNIE566\\THUNGUYEN (73))",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000826|",
+              "WhenOpened": "2026-11-02T11:17:33.86Z",
+              "EditorCaption": " - (local).TinhJewelryDB (DESKTOP-BNIE566\\THUNGUYEN (73))"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
