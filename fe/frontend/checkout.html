@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thanh toán | TĨNH Jewelry</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="checkout">
+  <div id="site-header"></div>
+
+  <div class="page-head"><h1>Thanh toán</h1></div>
+
+  <section class="section" style="padding-top:30px">
+    <form id="checkout-form" class="cart-layout" novalidate>
+      <div class="checkout-block">
+        <h3>Thông tin giao hàng</h3>
+        <div class="form-grid">
+          <div class="field"><label for="name">Họ và tên</label><input class="input" id="name"><div class="error">Vui lòng nhập họ tên</div></div>
+          <div class="field"><label for="phone">Số điện thoại</label><input class="input" id="phone" type="tel"><div class="error">Số điện thoại không hợp lệ</div></div>
+          <div class="field full"><label for="email">Email</label><input class="input" id="email" type="email"><div class="error">Email không hợp lệ</div></div>
+          <div class="field full"><label for="address">Địa chỉ (số nhà, đường, phường/xã)</label><input class="input" id="address"><div class="error">Vui lòng nhập địa chỉ</div></div>
+          <div class="field full"><label for="city">Quận/huyện, tỉnh/thành phố</label><input class="input" id="city"><div class="error">Vui lòng nhập tỉnh/thành</div></div>
+          <div class="field full"><label for="note">Ghi chú (không bắt buộc)</label><textarea class="input" id="note" rows="3"></textarea></div>
+        </div>
+
+        <h3>Phương thức vận chuyển</h3>
+        <div class="radio-group" id="ship-options"></div>
+
+        <h3>Phương thức thanh toán</h3>
+        <div class="radio-group">
+          <label class="radio"><input type="radio" name="payment" value="cod" checked> Thanh toán khi nhận hàng (COD)</label>
+          <label class="radio"><input type="radio" name="payment" value="bank"> Chuyển khoản ngân hàng</label>
+          <label class="radio"><input type="radio" name="payment" value="card"> Thẻ tín dụng/ghi nợ</label>
+        </div>
+      </div>
+
+      <aside class="summary">
+        <h3>Đơn hàng của bạn</h3>
+        <div id="mini-items"></div>
+        <div class="row" style="margin-top:12px"><span>Tạm tính</span><span id="sum-sub">0đ</span></div>
+        <div class="row"><span>Vận chuyển</span><span id="sum-ship">0đ</span></div>
+        <div class="row total"><span>Tổng cộng</span><span id="sum-total">0đ</span></div>
+        <button type="submit" class="btn btn-block">Đặt hàng</button>
+        <a href="cart.html" class="btn btn-outline btn-block">Quay lại giỏ hàng</a>
+      </aside>
+    </form>
+  </section>
+
+  <div id="site-footer"></div>
+  <script src="js/data.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
