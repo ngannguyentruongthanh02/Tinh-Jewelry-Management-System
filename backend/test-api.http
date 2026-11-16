@@ -1,0 +1,86 @@
+### 1. KIỂM TRA TRẠNG THÁI SERVER
+GET http://localhost:5000/
+
+### 2. LẤY TẤT CẢ SẢN PHẨM (GET ALL PRODUCTS)
+GET http://localhost:5000/api/products
+
+### 3. LỌC SẢN PHẨM THEO DANH MỤC (1: Vòng tay, 2: Dây chuyền, 3: Bộ DIY)
+GET http://localhost:5000/api/products?categoryId=1
+
+### 4. TÌM KIẾM SẢN PHẨM THEO TỪ KHÓA
+GET http://localhost:5000/api/products/search?keyword=vòng
+
+### 5. LẤY CHI TIẾT SẢN PHẨM THEO ID
+GET http://localhost:5000/api/products/1
+
+### 6. ĐĂNG KÝ TÀI KHOẢN KHÁCH HÀNG (REGISTER CUSTOMER)
+POST http://localhost:5000/api/auth/register
+Content-Type: application/json
+
+{
+  "fullName": "Nguyễn Minh Anh",
+  "phone": "0901234567",
+  "email": "minhanh.test@gmail.com",
+  "address": "123 Lê Lợi, Quận 1, TP. Hồ Chí Minh",
+  "password": "Password123"
+}
+
+### 7. ĐĂNG NHẬP KHÁCH HÀNG (LOGIN CUSTOMER)
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "minhanh.test@gmail.com",
+  "password": "Password123"
+}
+
+### 8. NHẬP / ĐĂNG KÝ SẢN PHẨM MỚI VÀO KHO (REGISTER / IMPORT PRODUCT)
+POST http://localhost:5000/api/products
+Content-Type: application/json
+
+{
+  "productCode": "DIY01",
+  "productName": "Bộ tự phối vòng tay TĨNH",
+  "description": "Cho phép khách hàng tự phối hợp thành phần dây, hạt, khóa nối và hoàn thiện vòng tay.",
+  "price": 390000,
+  "material": "Bạc 925 và phụ kiện",
+  "size": "Tự điều chỉnh",
+  "careInstructions": "Bảo quản nơi khô ráo trong túi zip.",
+  "style": "DIY sáng tạo",
+  "stockQuantity": 30,
+  "categoryID": 3,
+  "imageUrl": "images/diy-bracelet.svg",
+  "adminId": 1
+}
+
+### 9. LƯU ĐƠN HÀNG MỚI (CREATE / SAVE ORDER)
+POST http://localhost:5000/api/orders
+Content-Type: application/json
+
+{
+  "customerId": 1,
+  "receiverName": "Nguyễn Minh Anh",
+  "receiverPhone": "0901234567",
+  "shippingAddress": "123 Lê Lợi, Phường Bến Nghé, Quận 1, TP. Hồ Chí Minh",
+  "shippingFee": 30000,
+  "paymentMethod": "COD",
+  "adminId": 1,
+  "items": [
+    {
+      "productId": 1,
+      "quantity": 1,
+      "unitPrice": 250000
+    },
+    {
+      "productId": 4,
+      "quantity": 2,
+      "unitPrice": 250000
+    }
+  ]
+}
+
+### 10. XEM CHI TIẾT ĐƠN HÀNG VỪA LƯU
+GET http://localhost:5000/api/orders/1
+
+### 11. XEM LỊCH SỬ ĐƠN HÀNG CỦA KHÁCH HÀNG
+GET http://localhost:5000/api/orders/customer/1
