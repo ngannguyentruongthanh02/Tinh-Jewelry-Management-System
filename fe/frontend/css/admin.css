@@ -82,3 +82,47 @@ table.data img { width: 48px; height: 48px; object-fit: cover; background: var(-
 
 .sidebar-foot .pill { border-color: #777; color: #fff; background: transparent; }
 .sidebar-foot .pill.admin { background: #fff; color: var(--text); border-color: #fff; }
+
+/* Styles cho nút Duyệt đơn hàng & Trạng thái API */
+.btn-approve {
+  background: #2e7d32 !important;
+  color: #fff !important;
+  border-color: #2e7d32 !important;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+.btn-approve:hover {
+  background: #1b5e20 !important;
+  border-color: #1b5e20 !important;
+}
+.status.confirmed { background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; }
+.status.pending { background: #fff8e1; color: #f57f17; border: 1px solid #ffe082; }
+
+.api-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  font-size: 12px;
+  border-radius: 20px;
+  margin-left: auto;
+  font-weight: 500;
+}
+.api-badge.online {
+  background: #e8f5e9;
+  color: #2e7d32;
+  border: 1px solid #a5d6a7;
+}
+.api-badge.offline {
+  background: #fff3e0;
+  color: #e65100;
+  border: 1px solid #ffcc80;
+}
+.api-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 6px currentColor;
+}

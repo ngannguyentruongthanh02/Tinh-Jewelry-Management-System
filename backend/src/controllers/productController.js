@@ -277,14 +277,31 @@ const searchProducts = async (req, res) => {
  * POST /api/products
  */
 const registerProduct = async (req, res) => {
-  const {
-    productCode, productName, description, price, material = 'Bạc 925',
-    size = 'Free size', careInstructions, style = 'Tối giản', stockQuantity = 0, categoryID, imageUrl
-  } = req.body;
+    let {
+      productCode, productName, description, price, material = 'Bạc 925',
+      size = 'Free size', careInstructions, style = 'Tối giản', stockQuantity = 0, categoryID, imageUrl
+    } = req.body;
 
-  if (!productCode || !productName || !price || !categoryID) {
-    return res.status(400).json({ success: false, message: 'Vui lòng cung cấp đủ: productCode, productName, price, categoryID' });
-  }
+    // Hỗ trợ cả định dạng từ form admin (name, code, desc, stock, category, image...)
+    productName = productName || req.body.name;
+    productCode = productCode || req.body.code || ('SP' + Date.now().toString().slice(-4));
+    description = description || req.body.desc || '';
+    careInstructions = careInstructions || req.body.care || '';
+    if (req.body.stock !== undefined && req.body.stockQuantity === undefined) {
+      stockQuantity = req.body.stock;
+    }
+    if (!categoryID && req.body.category) {
+      const c = String(req.body.category).toLowerCase();
+      categoryID = (c === 'bracelet' || c.includes('vòng') || c.includes('lắc')) ? 1 :
+                   (c === 'necklace' || c.includes('dây')) ? 2 :
+                   (c === 'diy' || c.includes('diy')) ? 3 : 1;
+    }
+    categoryID = categoryID || 1;
+    imageUrl = imageUrl || req.body.image;
+
+    if (!productName || !price) {
+      return res.status(400).json({ success: false, message: 'Vui lòng cung cấp ít nhất: productName, price' });
+    }
 
   try {
     const pool = await connectDB();
@@ -350,9 +367,245 @@ const registerProduct = async (req, res) => {
   }
 };
 
+/**
+ * 5. API Sửa / Cập nhật sản phẩm
+ * PUT /api/products/:id
+ */
+const updateProduct = async (req, res) => {
+  const { id } = req.params;
+  const numId = parseInt(id, 10);
+  let {
+    productCode, productName, description, price, material,
+    size, careInstructions, style, stockQuantity, categoryID, imageUrl
+  } = req.body;
+
+  productName = productName || req.body.name;
+  productCode = productCode || req.body.code;
+  description = description !== undefined ? description : req.body.desc;
+  careInstructions = careInstructions !== undefined ? careInstructions : req.body.care;
+  if (req.body.stock !== undefined && stockQuantity === undefined) {
+    stockQuantity = req.body.stock;
+  }
+  if (!categoryID && req.body.category) {
+    const c = String(req.body.category).toLowerCase();
+    categoryID = (c === 'bracelet' || c.includes('vòng') || c.includes('lắc')) ? 1 :
+                 (c === 'necklace' || c.includes('dây')) ? 2 :
+                 (c === 'diy' || c.includes('diy')) ? 3 : 1;
+  }
+  imageUrl = imageUrl || req.body.image;
+
+  try {
+    const pool = await connectDB();
+    const checkRes = await pool.request()
+      .input('ProductID', sql.Int, numId)
+      .query(`SELECT ProductID FROM Product WHERE ProductID = @ProductID`);
+
+    if (checkRes.recordset.length === 0) {
+      return res.status(404).json({ success: false, message: `Không tìm thấy sản phẩm ID ${id}` });
+    }
+
+    const transaction = new sql.Transaction(pool);
+    await transaction.begin();
+
+    const updateReq = new sql.Request(transaction);
+    updateReq.input('ProductID', sql.Int, numId);
+    if (productCode !== undefined) updateReq.input('ProductCode', sql.VarChar(30), productCode);
+    if (productName !== undefined) updateReq.input('ProductName', sql.NVarChar(150), productName);
+    if (description !== undefined) updateReq.input('Description', sql.NVarChar(sql.MAX), description);
+    if (price !== undefined) updateReq.input('Price', sql.Decimal(12, 0), price);
+    if (material !== undefined) updateReq.input('Material', sql.NVarChar(100), material);
+    if (size !== undefined) updateReq.input('Size', sql.NVarChar(50), size);
+    if (careInstructions !== undefined) updateReq.input('CareInstructions', sql.NVarChar(sql.MAX), careInstructions);
+    if (style !== undefined) updateReq.input('Style', sql.NVarChar(50), style);
+    if (stockQuantity !== undefined) {
+      updateReq.input('StockQuantity', sql.Int, stockQuantity);
+      updateReq.input('StockStatus', sql.NVarChar(20), stockQuantity > 0 ? 'Còn hàng' : 'Hết hàng');
+    }
+    if (categoryID !== undefined) updateReq.input('CategoryID', sql.Int, categoryID);
+
+    let setClauses = [];
+    if (productCode !== undefined) setClauses.push('ProductCode = @ProductCode');
+    if (productName !== undefined) setClauses.push('ProductName = @ProductName');
+    if (description !== undefined) setClauses.push('Description = @Description');
+    if (price !== undefined) setClauses.push('Price = @Price');
+    if (material !== undefined) setClauses.push('Material = @Material');
+    if (size !== undefined) setClauses.push('Size = @Size');
+    if (careInstructions !== undefined) setClauses.push('CareInstructions = @CareInstructions');
+    if (style !== undefined) setClauses.push('Style = @Style');
+    if (stockQuantity !== undefined) setClauses.push('StockQuantity = @StockQuantity, StockStatus = @StockStatus');
+    if (categoryID !== undefined) setClauses.push('CategoryID = @CategoryID');
+
+    if (setClauses.length > 0) {
+      await updateReq.query(`UPDATE Product SET ${setClauses.join(', ')} WHERE ProductID = @ProductID`);
+    }
+
+    if (imageUrl) {
+      const imgReq = new sql.Request(transaction);
+      imgReq.input('ProductID', sql.Int, numId);
+      imgReq.input('ImageURL', sql.VarChar(255), imageUrl);
+      const existImg = await imgReq.query(`SELECT ImageID FROM Product_Image WHERE ProductID = @ProductID AND IsPrimary = 1`);
+      if (existImg.recordset.length > 0) {
+        await new sql.Request(transaction)
+          .input('ProductID', sql.Int, numId)
+          .input('ImageURL', sql.VarChar(255), imageUrl)
+          .query(`UPDATE Product_Image SET ImageURL = @ImageURL WHERE ProductID = @ProductID AND IsPrimary = 1`);
+      } else {
+        await new sql.Request(transaction)
+          .input('ProductID', sql.Int, numId)
+          .input('ImageURL', sql.VarChar(255), imageUrl)
+          .query(`INSERT INTO Product_Image (ProductID, ImageURL, IsPrimary) VALUES (@ProductID, @ImageURL, 1)`);
+      }
+    }
+
+    await transaction.commit();
+
+    // Lấy lại sản phẩm mới nhất
+    const updated = await pool.request().input('ProductID', sql.Int, numId).query(`
+      SELECT P.*, C.CategoryName, PI.ImageURL
+      FROM Product P
+      LEFT JOIN Category C ON P.CategoryID = C.CategoryID
+      OUTER APPLY (SELECT TOP 1 ImageURL FROM Product_Image WHERE ProductID = P.ProductID ORDER BY IsPrimary DESC) PI
+      WHERE P.ProductID = @ProductID
+    `);
+
+    return res.status(200).json({
+      success: true,
+      message: 'Cập nhật sản phẩm thành công!',
+      data: updated.recordset[0]
+    });
+  } catch (error) {
+    const idx = localProducts.findIndex(p => p.ProductID === numId || p.id === numId);
+    if (idx === -1) {
+      return res.status(404).json({ success: false, message: `Không tìm thấy sản phẩm ID ${id}` });
+    }
+    const current = localProducts[idx];
+    const updated = {
+      ...current,
+      ProductName: productName || current.ProductName || current.name,
+      name: productName || current.name || current.ProductName,
+      ProductCode: productCode || current.ProductCode || current.code,
+      Description: description !== undefined ? description : current.Description,
+      Price: price !== undefined ? Number(price) : current.Price,
+      price: price !== undefined ? Number(price) : current.price,
+      Material: material || current.Material,
+      Size: size || current.Size,
+      CareInstructions: careInstructions || current.CareInstructions,
+      Style: style || current.Style,
+      StockQuantity: stockQuantity !== undefined ? Number(stockQuantity) : current.StockQuantity,
+      stock: stockQuantity !== undefined ? Number(stockQuantity) : current.stock,
+      StockStatus: (stockQuantity !== undefined ? Number(stockQuantity) : current.StockQuantity) > 0 ? 'Còn hàng' : 'Hết hàng',
+      CategoryID: categoryID ? Number(categoryID) : current.CategoryID,
+      CategoryName: categoryID === 1 ? 'Vòng tay' : categoryID === 2 ? 'Dây chuyền' : current.CategoryName,
+      ImageURL: imageUrl || current.ImageURL || current.image,
+      image: imageUrl || current.image || current.ImageURL
+    };
+    localProducts[idx] = updated;
+
+    return res.status(200).json({
+      success: true,
+      message: 'Cập nhật sản phẩm thành công (local)!',
+      data: updated
+    });
+  }
+};
+
+/**
+ * 6. API Xóa sản phẩm
+ * DELETE /api/products/:id
+ */
+const deleteProduct = async (req, res) => {
+  const { id } = req.params;
+  const numId = parseInt(id, 10);
+
+  try {
+    const pool = await connectDB();
+    const checkOrder = await pool.request()
+      .input('ProductID', sql.Int, numId)
+      .query(`SELECT TOP 1 OrderItemID FROM OrderItem WHERE ProductID = @ProductID`);
+
+    if (checkOrder.recordset.length > 0) {
+      // Đã có đơn hàng liên quan -> chuyển sang trạng thái Ngừng kinh doanh để bảo đảm toàn vẹn dữ liệu
+      await pool.request()
+        .input('ProductID', sql.Int, numId)
+        .query(`UPDATE Product SET StockStatus = N'Ngừng kinh doanh', StockQuantity = 0 WHERE ProductID = @ProductID`);
+      return res.status(200).json({
+        success: true,
+        message: 'Sản phẩm đã từng có đơn hàng nên được chuyển sang trạng thái "Ngừng kinh doanh" để bảo toàn lịch sử hóa đơn!'
+      });
+    }
+
+    // Chưa có đơn hàng -> xóa sạch liên kết trong CSDL
+    await pool.request().input('ProductID', sql.Int, numId).query(`
+      DELETE FROM Cart_Item WHERE ProductID = @ProductID;
+      DELETE FROM Product_Image WHERE ProductID = @ProductID;
+      DELETE FROM Product WHERE ProductID = @ProductID;
+    `);
+
+    return res.status(200).json({
+      success: true,
+      message: 'Xóa sản phẩm thành công!'
+    });
+  } catch (error) {
+    const idx = localProducts.findIndex(p => p.ProductID === numId || p.id === numId);
+    if (idx === -1) {
+      return res.status(404).json({ success: false, message: `Không tìm thấy sản phẩm ID ${id}` });
+    }
+    localProducts.splice(idx, 1);
+    return res.status(200).json({
+      success: true,
+      message: 'Xóa sản phẩm thành công!'
+    });
+  }
+};
+
+/**
+ * 7. API Cập nhật nhanh số lượng tồn kho
+ * PATCH /api/products/:id/stock
+ */
+const updateProductStock = async (req, res) => {
+  const { id } = req.params;
+  const { stockQuantity, stock } = req.body;
+  const qty = stockQuantity !== undefined ? stockQuantity : stock;
+  const numId = parseInt(id, 10);
+
+  if (qty === undefined || qty < 0) {
+    return res.status(400).json({ success: false, message: 'Số lượng tồn kho không hợp lệ!' });
+  }
+
+  try {
+    const pool = await connectDB();
+    const status = qty > 0 ? 'Còn hàng' : 'Hết hàng';
+    await pool.request()
+      .input('ProductID', sql.Int, numId)
+      .input('StockQuantity', sql.Int, qty)
+      .input('StockStatus', sql.NVarChar(20), status)
+      .query(`UPDATE Product SET StockQuantity = @StockQuantity, StockStatus = @StockStatus WHERE ProductID = @ProductID`);
+
+    return res.status(200).json({
+      success: true,
+      message: 'Cập nhật tồn kho thành công!',
+      data: { productId: numId, stockQuantity: qty, stockStatus: status }
+    });
+  } catch (error) {
+    const p = localProducts.find(item => item.ProductID === numId || item.id === numId);
+    if (!p) return res.status(404).json({ success: false, message: `Không tìm thấy sản phẩm ID ${id}` });
+    p.StockQuantity = Number(qty);
+    p.stock = Number(qty);
+    p.StockStatus = qty > 0 ? 'Còn hàng' : 'Hết hàng';
+    return res.status(200).json({
+      success: true,
+      message: 'Cập nhật tồn kho thành công!',
+      data: { productId: numId, stockQuantity: qty, stockStatus: p.StockStatus }
+    });
+  }
+};
+
 module.exports = {
   getAllProducts,
   getProductById,
   searchProducts,
-  registerProduct
+  registerProduct,
+  updateProduct,
+  deleteProduct,
+  updateProductStock
 };

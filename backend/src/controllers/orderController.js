@@ -1,6 +1,62 @@
 const { sql, connectDB } = require('../config/db');
 
-const localOrders = [];
+// Khởi tạo danh sách đơn hàng mẫu khớp với Insert.sql trong CSDL
+const localOrders = [
+  {
+    orderId: 1,
+    id: 'ORD001',
+    orderCode: 'ORD001',
+    customerId: 1,
+    date: '2026-11-01T20:26:50.000Z',
+    customer: {
+      name: 'Nguyen Minh Anh',
+      phone: '0901234567',
+      email: 'minhanh@gmail.com',
+      address: 'Quan 1, TP. Ho Chi Minh'
+    },
+    receiverName: 'Nguyen Minh Anh',
+    receiverPhone: '0901234567',
+    shippingAddress: 'Quan 1, TP. Ho Chi Minh',
+    subTotal: 850000,
+    shippingFee: 30000,
+    total: 880000,
+    totalAmount: 880000,
+    payment: 'COD',
+    status: 'Chờ xác nhận',
+    orderStatus: 'Chờ xác nhận',
+    items: [
+      { id: 1, productId: 1, name: 'Vòng tay bạc mảnh TĨNH', size: 'Free size', qty: 2, quantity: 2, price: 250000, unitPrice: 250000, lineTotal: 500000 },
+      { id: 4, productId: 4, name: 'Dây chuyền bạc mảnh TĨNH', size: '45cm', qty: 1, quantity: 1, price: 350000, unitPrice: 350000, lineTotal: 350000 }
+    ]
+  },
+  {
+    orderId: 2,
+    id: 'ORD002',
+    orderCode: 'ORD002',
+    customerId: 2,
+    date: '2026-11-02T22:07:42.000Z',
+    customer: {
+      name: 'Tran Hoang Nam',
+      phone: '0912345678',
+      email: 'hoangnam@gmail.com',
+      address: 'Thu Duc, TP. Ho Chi Minh'
+    },
+    receiverName: 'Tran Hoang Nam',
+    receiverPhone: '0912345678',
+    shippingAddress: 'Thu Duc, TP. Ho Chi Minh',
+    subTotal: 850000,
+    shippingFee: 30000,
+    total: 880000,
+    totalAmount: 880000,
+    payment: 'bank',
+    status: 'Đã xác nhận',
+    orderStatus: 'Đã xác nhận',
+    items: [
+      { id: 2, productId: 2, name: 'Vòng tay hình học TĨNH', size: 'Free size', qty: 1, quantity: 1, price: 300000, unitPrice: 300000, lineTotal: 300000 },
+      { id: 5, productId: 5, name: 'Dây chuyền mặt hình học TĨNH', size: '45cm', qty: 1, quantity: 1, price: 550000, unitPrice: 550000, lineTotal: 550000 }
+    ]
+  }
+];
 
 /**
  * 1. API Lưu đơn hàng (Create / Save Order)
@@ -179,8 +235,259 @@ const getOrdersByCustomerId = async (req, res) => {
   }
 };
 
+/**
+ * 4. API Lấy danh sách tất cả đơn hàng (Dành cho Quản trị viên)
+ * GET /api/orders
+ */
+const getAllOrders = async (req, res) => {
+  const { status, keyword } = req.query;
+
+  try {
+    const pool = await connectDB();
+    let query = `
+      SELECT 
+        O.OrderID, O.OrderCode, O.CustomerID, O.AdminID,
+        O.ReceiverName, O.ReceiverPhone, O.ShippingAddress,
+        O.SubTotal, O.ShippingFee, O.TotalAmount, O.OrderStatus,
+        O.CancelReason, O.CreatedAt, O.UpdatedAt,
+        C.FullName AS CustomerName, C.Email AS CustomerEmail, C.Phone AS CustomerPhone
+      FROM [Order] O
+      LEFT JOIN Customer C ON O.CustomerID = C.CustomerID
+      WHERE 1=1
+    `;
+
+    const request = pool.request();
+    if (status && status !== 'all') {
+      query += ` AND O.OrderStatus = @Status`;
+      request.input('Status', sql.NVarChar(50), status);
+    }
+    if (keyword) {
+      query += ` AND (O.OrderCode LIKE @Kw OR O.ReceiverName LIKE @Kw OR O.ReceiverPhone LIKE @Kw OR C.Email LIKE @Kw)`;
+      request.input('Kw', sql.NVarChar(100), `%${keyword}%`);
+    }
+
+    query += ` ORDER BY O.CreatedAt DESC`;
+    const result = await request.query(query);
+
+    // Lấy kèm danh sách sản phẩm trong từng đơn
+    const orders = result.recordset;
+    for (const ord of orders) {
+      const itemsRes = await pool.request()
+        .input('OrderID', sql.Int, ord.OrderID)
+        .query(`
+          SELECT OI.*, P.ProductName, P.ProductCode, P.Size, PI.ImageURL
+          FROM OrderItem OI
+          INNER JOIN Product P ON OI.ProductID = P.ProductID
+          OUTER APPLY (SELECT TOP 1 ImageURL FROM Product_Image WHERE ProductID = P.ProductID ORDER BY IsPrimary DESC) PI
+          WHERE OI.OrderID = @OrderID
+        `);
+      ord.items = itemsRes.recordset;
+
+      // Chuẩn hóa cấu trúc để tương thích cả giao diện web lẫn JSON API
+      ord.id = ord.OrderCode;
+      ord.date = ord.CreatedAt;
+      ord.total = Number(ord.TotalAmount);
+      ord.status = ord.OrderStatus;
+      ord.customer = {
+        name: ord.ReceiverName || ord.CustomerName,
+        phone: ord.ReceiverPhone || ord.CustomerPhone,
+        email: ord.CustomerEmail || '',
+        address: ord.ShippingAddress
+      };
+    }
+
+    return res.status(200).json({
+      success: true,
+      source: 'SQL Server',
+      total: orders.length,
+      data: orders
+    });
+  } catch (error) {
+    // Fallback dữ liệu local
+    let list = [...localOrders];
+    if (status && status !== 'all') {
+      list = list.filter(o => o.status === status || o.orderStatus === status);
+    }
+    if (keyword) {
+      const kw = keyword.toLowerCase();
+      list = list.filter(o =>
+        (o.id && o.id.toLowerCase().includes(kw)) ||
+        (o.orderCode && o.orderCode.toLowerCase().includes(kw)) ||
+        (o.customer?.name && o.customer.name.toLowerCase().includes(kw)) ||
+        (o.customer?.phone && o.customer.phone.includes(kw)) ||
+        (o.customer?.email && o.customer.email.toLowerCase().includes(kw))
+      );
+    }
+
+    return res.status(200).json({
+      success: true,
+      source: 'Mock Database (Ready for SQL Server)',
+      total: list.length,
+      data: list
+    });
+  }
+};
+
+/**
+ * 5. API Duyệt đơn hàng / Cập nhật trạng thái đơn hàng (Dành cho Admin)
+ * PUT /api/orders/:id/status
+ */
+const updateOrderStatus = async (req, res) => {
+  const { id } = req.params;
+  const { status, orderStatus, adminId = 1, cancelReason } = req.body;
+  const newStatus = status || orderStatus;
+
+  if (!newStatus) {
+    return res.status(400).json({ success: false, message: 'Vui lòng cung cấp trạng thái mới (status)' });
+  }
+
+  try {
+    const pool = await connectDB();
+    const isNum = !isNaN(Number(id));
+
+    // Tìm OrderID tương ứng
+    let findReq = pool.request();
+    let orderFind;
+    if (isNum) {
+      orderFind = await findReq.input('ID', sql.Int, parseInt(id, 10))
+        .query(`SELECT OrderID, OrderCode, OrderStatus FROM [Order] WHERE OrderID = @ID`);
+    } else {
+      orderFind = await findReq.input('Code', sql.VarChar(20), id)
+        .query(`SELECT OrderID, OrderCode, OrderStatus FROM [Order] WHERE OrderCode = @Code`);
+    }
+
+    if (orderFind.recordset.length === 0) {
+      return res.status(404).json({ success: false, message: `Không tìm thấy đơn hàng ${id}` });
+    }
+
+    const orderRow = orderFind.recordset[0];
+    const realOrderID = orderRow.OrderID;
+    const oldStatus = orderRow.OrderStatus;
+
+    const transaction = new sql.Transaction(pool);
+    await transaction.begin();
+
+    const updateReq = new sql.Request(transaction);
+    updateReq.input('OrderID', sql.Int, realOrderID);
+    updateReq.input('NewStatus', sql.NVarChar(50), newStatus);
+    updateReq.input('AdminID', sql.Int, adminId);
+    updateReq.input('CancelReason', sql.NVarChar(255), cancelReason || null);
+
+    await updateReq.query(`
+      UPDATE [Order]
+      SET OrderStatus = @NewStatus,
+          AdminID = @AdminID,
+          CancelReason = ISNULL(@CancelReason, CancelReason),
+          UpdatedAt = GETDATE()
+      WHERE OrderID = @OrderID
+    `);
+
+    // Nếu chuyển sang trạng thái "Đã hủy", tự động hoàn trả số lượng vào tồn kho Product
+    if (newStatus === 'Đã hủy' && oldStatus !== 'Đã hủy') {
+      const itemsRes = await new sql.Request(transaction)
+        .input('OrderID', sql.Int, realOrderID)
+        .query(`SELECT ProductID, Quantity FROM OrderItem WHERE OrderID = @OrderID`);
+
+      for (const item of itemsRes.recordset) {
+        await new sql.Request(transaction)
+          .input('ProductID', sql.Int, item.ProductID)
+          .input('Qty', sql.Int, item.Quantity)
+          .query(`
+            UPDATE Product
+            SET StockQuantity = StockQuantity + @Qty,
+                StockStatus = N'Còn hàng'
+            WHERE ProductID = @ProductID
+          `);
+      }
+    }
+
+    await transaction.commit();
+
+    return res.status(200).json({
+      success: true,
+      message: `Duyệt đơn hàng [${orderRow.OrderCode}] chuyển sang trạng thái: "${newStatus}" thành công!`,
+      data: {
+        orderId: realOrderID,
+        orderCode: orderRow.OrderCode,
+        previousStatus: oldStatus,
+        currentStatus: newStatus
+      }
+    });
+  } catch (error) {
+    // Fallback local
+    const order = localOrders.find(o => o.id === id || o.orderCode === id || o.orderId === Number(id));
+    if (!order) {
+      return res.status(404).json({ success: false, message: `Không tìm thấy đơn hàng ${id}` });
+    }
+    const previous = order.status;
+    order.status = newStatus;
+    order.orderStatus = newStatus;
+    if (cancelReason) order.cancelReason = cancelReason;
+
+    return res.status(200).json({
+      success: true,
+      message: `Duyệt đơn hàng [${order.id || order.orderCode}] chuyển sang: "${newStatus}" thành công!`,
+      data: {
+        id: order.id,
+        previousStatus: previous,
+        currentStatus: newStatus
+      }
+    });
+  }
+};
+
+/**
+ * 6. API Thống kê Dashboard Quản trị
+ * GET /api/orders/stats
+ */
+const getOrderStats = async (req, res) => {
+  try {
+    const pool = await connectDB();
+    const statsRes = await pool.request().query(`
+      SELECT 
+        ISNULL(SUM(CASE WHEN OrderStatus <> N'Đã hủy' THEN TotalAmount ELSE 0 END), 0) AS TotalRevenue,
+        COUNT(OrderID) AS TotalOrders,
+        SUM(CASE WHEN OrderStatus = N'Chờ xác nhận' OR OrderStatus = 'Pending' THEN 1 ELSE 0 END) AS PendingOrders
+      FROM [Order]
+    `);
+    const lowStockRes = await pool.request().query(`
+      SELECT COUNT(ProductID) AS LowStockCount FROM Product WHERE StockQuantity <= 5
+    `);
+
+    const stats = statsRes.recordset[0];
+    const low = lowStockRes.recordset[0].LowStockCount;
+
+    return res.status(200).json({
+      success: true,
+      data: {
+        revenue: Number(stats.TotalRevenue),
+        totalOrders: Number(stats.TotalOrders),
+        pendingOrders: Number(stats.PendingOrders),
+        lowStockCount: Number(low)
+      }
+    });
+  } catch (error) {
+    const valid = localOrders.filter(o => o.status !== 'Đã hủy');
+    const revenue = valid.reduce((acc, curr) => acc + (curr.total || curr.totalAmount || 0), 0);
+    const pendingOrders = localOrders.filter(o => o.status === 'Chờ xác nhận' || o.orderStatus === 'Pending').length;
+
+    return res.status(200).json({
+      success: true,
+      data: {
+        revenue,
+        totalOrders: localOrders.length,
+        pendingOrders,
+        lowStockCount: 2
+      }
+    });
+  }
+};
+
 module.exports = {
   createOrder,
   getOrderById,
-  getOrdersByCustomerId
+  getOrdersByCustomerId,
+  getAllOrders,
+  updateOrderStatus,
+  getOrderStats
 };

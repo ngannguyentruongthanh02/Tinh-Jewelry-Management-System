@@ -13,20 +13,34 @@
 
   <section class="section" style="padding-top:30px">
     <div class="cart-layout" id="cart-layout">
-      <table class="cart-table">
-        <thead>
-          <tr><th>Sản phẩm</th><th>Đơn giá</th><th>Số lượng</th><th>Thành tiền</th><th></th></tr>
-        </thead>
-        <tbody id="cart-body"></tbody>
-      </table>
+      <div>
+        <table class="cart-table">
+          <thead>
+            <tr><th>Sản phẩm</th><th>Đơn giá</th><th>Số lượng</th><th>Thành tiền</th><th></th></tr>
+          </thead>
+          <tbody id="cart-body"></tbody>
+        </table>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;">
+          <a href="products.html" class="btn btn-outline btn-small">← Tiếp tục chọn thêm sản phẩm</a>
+          <button id="btn-clear-all" class="btn-clear-cart">Xóa tất cả giỏ hàng</button>
+        </div>
+      </div>
       <aside class="summary">
         <h3>Tóm tắt đơn hàng</h3>
+        <div class="ship-progress" id="ship-progress"></div>
         <div class="row"><span>Tạm tính</span><span id="sum-sub">0đ</span></div>
+        <div class="row" id="row-discount" style="display:none;color:#2e7d32"><span>Giảm giá</span><span id="sum-discount">-0đ</span></div>
         <div class="row"><span>Vận chuyển</span><span id="sum-ship">0đ</span></div>
         <div class="row total"><span>Tổng cộng</span><span id="sum-total">0đ</span></div>
+        
+        <div class="coupon-box">
+          <input class="input" id="coupon-code" placeholder="Mã ưu đãi (TINH10)">
+          <button class="btn btn-outline" id="btn-apply-coupon" type="button">Áp dụng</button>
+        </div>
+        <div id="coupon-applied"></div>
+
         <p class="note" id="sum-note"></p>
-        <a href="checkout.html" class="btn btn-block">Tiến hành thanh toán</a>
-        <a href="products.html" class="btn btn-outline btn-block">Tiếp tục mua sắm</a>
+        <a href="checkout.html" class="btn btn-block" id="btn-to-checkout">Tiến hành thanh toán</a>
       </aside>
     </div>
   </section>

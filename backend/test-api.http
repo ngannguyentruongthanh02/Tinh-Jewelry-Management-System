@@ -84,3 +84,53 @@ GET http://localhost:5000/api/orders/1
 
 ### 11. XEM LỊCH SỬ ĐƠN HÀNG CỦA KHÁCH HÀNG
 GET http://localhost:5000/api/orders/customer/1
+
+### 12. [ADMIN] LẤY DANH SÁCH TẤT CẢ ĐƠN HÀNG
+GET http://localhost:5000/api/orders
+
+### 13. [ADMIN] LỌC ĐƠN HÀNG THEO TRẠNG THÁI (Chờ xác nhận / Đã xác nhận / Đang giao / Đã giao / Đã hủy)
+GET http://localhost:5000/api/orders?status=Chờ xác nhận
+
+### 14. [ADMIN] DUYỆT ĐƠN HÀNG (CẬP NHẬT TRẠNG THÁI: 'Đã xác nhận')
+PUT http://localhost:5000/api/orders/ORD001/status
+Content-Type: application/json
+
+{
+  "status": "Đã xác nhận",
+  "adminId": 1
+}
+
+### 15. [ADMIN] CẬP NHẬT ĐƠN HÀNG SANG 'Đang giao'
+PUT http://localhost:5000/api/orders/ORD001/status
+Content-Type: application/json
+
+{
+  "status": "Đang giao",
+  "adminId": 1
+}
+
+### 16. [ADMIN] THỐNG KÊ DASHBOARD QUẢN TRỊ (Doanh thu, tổng đơn, chờ duyệt, tồn kho thấp)
+GET http://localhost:5000/api/orders/stats
+
+### 17. [ADMIN] SỬA THÔNG TIN SẢN PHẨM (UPDATE PRODUCT)
+PUT http://localhost:5000/api/products/1
+Content-Type: application/json
+
+{
+  "productName": "Vòng tay bạc mảnh TĨNH (Phiên bản cao cấp 2026)",
+  "price": 280000,
+  "stockQuantity": 25,
+  "material": "Bạc 925 chuẩn quốc tế",
+  "description": "Thiết kế dạng dây mảnh tối giản cao cấp, tinh xảo từng mắt xích."
+}
+
+### 18. [ADMIN] CẬP NHẬT NHANH TỒN KHO SẢN PHẨM
+PATCH http://localhost:5000/api/products/1/stock
+Content-Type: application/json
+
+{
+  "stockQuantity": 30
+}
+
+### 19. [ADMIN] XÓA SẢN PHẨM
+DELETE http://localhost:5000/api/products/8

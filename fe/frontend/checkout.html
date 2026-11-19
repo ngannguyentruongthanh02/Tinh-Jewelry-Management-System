@@ -28,10 +28,35 @@
         <div class="radio-group" id="ship-options"></div>
 
         <h3>Phương thức thanh toán</h3>
-        <div class="radio-group">
-          <label class="radio"><input type="radio" name="payment" value="cod" checked> Thanh toán khi nhận hàng (COD)</label>
-          <label class="radio"><input type="radio" name="payment" value="bank"> Chuyển khoản ngân hàng</label>
-          <label class="radio"><input type="radio" name="payment" value="card"> Thẻ tín dụng/ghi nợ</label>
+        <div class="radio-group" id="payment-options">
+          <label class="radio"><input type="radio" name="payment" value="cod" checked> <span>Thanh toán khi nhận hàng (COD)</span></label>
+          <div id="cod-detail" class="bank-box" style="margin-top:-2px;margin-bottom:6px;">
+            <p style="margin:0;color:#555">Nhận hàng, kiểm tra sản phẩm và thanh toán tiền mặt trực tiếp cho bưu tá.</p>
+          </div>
+
+          <label class="radio"><input type="radio" name="payment" value="bank"> <span>Chuyển khoản ngân hàng (Quét mã VietQR)</span></label>
+          <div id="bank-detail" class="bank-box" style="display:none;margin-top:-2px;margin-bottom:6px;">
+            <div class="bank-title">Thông tin tài khoản nhận chuyển khoản:</div>
+            <div class="bank-info">
+              <div>Ngân hàng: <strong>MB Bank (Ngân hàng Quân Đội)</strong></div>
+              <div>Số tài khoản: <strong>0900123456789</strong></div>
+              <div>Chủ tài khoản: <strong>TINH JEWELRY</strong></div>
+              <div>Nội dung CK: <strong id="bank-memo">TINH [MaDonHang]</strong></div>
+            </div>
+            <div class="bank-qr-wrap">
+              <img id="vietqr-img" class="bank-qr" src="https://img.vietqr.io/image/MB-0900123456789-compact2.png?amount=0&addInfo=TINH%20ORDER" alt="Mã QR chuyển khoản">
+              <p style="font-size:12px;color:#777;margin:6px 0 0">Quét mã QR bằng ứng dụng ngân hàng bất kỳ để thanh toán tức thì</p>
+            </div>
+          </div>
+
+          <label class="radio"><input type="radio" name="payment" value="card"> <span>Thẻ tín dụng / Thẻ ghi nợ quốc tế</span></label>
+          <div id="card-detail" class="card-box" style="display:none;margin-top:-2px;">
+            <div class="form-grid">
+              <div class="field full"><label>Số thẻ</label><input class="input" placeholder="•••• •••• •••• ••••" maxlength="19"></div>
+              <div class="field"><label>Hạn thẻ (MM/YY)</label><input class="input" placeholder="MM/YY" maxlength="5"></div>
+              <div class="field"><label>Mã bảo mật CVV</label><input class="input" placeholder="•••" maxlength="4"></div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -39,9 +64,17 @@
         <h3>Đơn hàng của bạn</h3>
         <div id="mini-items"></div>
         <div class="row" style="margin-top:12px"><span>Tạm tính</span><span id="sum-sub">0đ</span></div>
+        <div class="row" id="checkout-row-discount" style="display:none;color:#2e7d32"><span>Giảm giá</span><span id="checkout-sum-discount">-0đ</span></div>
         <div class="row"><span>Vận chuyển</span><span id="sum-ship">0đ</span></div>
         <div class="row total"><span>Tổng cộng</span><span id="sum-total">0đ</span></div>
-        <button type="submit" class="btn btn-block">Đặt hàng</button>
+        
+        <div class="coupon-box" style="margin-top:14px">
+          <input class="input" id="checkout-coupon-code" placeholder="Mã giảm giá (TINH10)">
+          <button class="btn btn-outline" id="btn-checkout-coupon" type="button">Áp dụng</button>
+        </div>
+        <div id="checkout-coupon-tag"></div>
+
+        <button type="submit" class="btn btn-block" id="btn-submit-order">Xác nhận đặt hàng</button>
         <a href="cart.html" class="btn btn-outline btn-block">Quay lại giỏ hàng</a>
       </aside>
     </form>

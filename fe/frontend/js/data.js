@@ -1,45 +1,125 @@
-/* Dữ liệu sản phẩm mẫu.
-   Khi có backend SQL Server, thay mảng này bằng dữ liệu lấy từ API (fetch). */
+/* =====================================================================
+   DỮ LIỆU SẢN PHẨM & DANH MỤC - TĨNH JEWELRY
+   Chuẩn hóa theo Bảng 3.2, 3.3, 3.4 và SQL Server TinhJewelryDB
+   ===================================================================== */
 
 const CATEGORIES = {
-  ring: 'Nhẫn',
+  bracelet: 'Vòng tay',
   necklace: 'Dây chuyền',
-  earring: 'Bông tai',
-  bracelet: 'Lắc tay'
+  diy: 'Bộ sản phẩm DIY'
 };
 
 const SIZES = {
-  ring: ['6', '7', '8', '9', '10'],
+  bracelet: ['Free size', '16cm', '17cm', '18cm'],
   necklace: ['40cm', '45cm', '50cm'],
-  earring: ['Free size'],
-  bracelet: ['16cm', '17cm', '18cm']
+  diy: ['Tự điều chỉnh'],
+  ring: ['6', '7', '8', '9', '10'],
+  earring: ['Free size']
 };
 
 const DEFAULT_PRODUCTS = [
-  { id: 1, name: 'Nhẫn bạc Luna', category: 'ring', price: 890000, stock: 20, image: 'images/ring-1.svg',
-    desc: 'Nhẫn bạc 925 đính đá zirconia, dáng mảnh nhẹ nhàng, phù hợp đeo hằng ngày.', material: 'Bạc 925', weight: '2.1g' },
-  { id: 2, name: 'Nhẫn bạc Sương', category: 'ring', price: 750000, stock: 15, image: 'images/ring-2.svg',
-    desc: 'Nhẫn trơn bản nhỏ với bề mặt xước mờ, phong cách tối giản.', material: 'Bạc 925', weight: '1.8g' },
-  { id: 3, name: 'Dây chuyền Nguyệt', category: 'necklace', price: 1290000, stock: 12, image: 'images/necklace-1.svg',
-    desc: 'Dây chuyền mặt trăng khuyết, chuỗi bạc mảnh dài 45cm có thể điều chỉnh.', material: 'Bạc 925', weight: '3.4g' },
-  { id: 4, name: 'Dây chuyền Giọt Sương', category: 'necklace', price: 1090000, stock: 8, image: 'images/necklace-2.svg',
-    desc: 'Mặt dây hình giọt nước đính đá, tạo điểm nhấn thanh lịch trên cổ.', material: 'Bạc 925', weight: '3.0g' },
-  { id: 5, name: 'Bông tai Vân', category: 'earring', price: 650000, stock: 25, image: 'images/earring-1.svg',
-    desc: 'Bông tai dáng tròn nhỏ, khóa chốt chắc chắn, không gây kích ứng da.', material: 'Bạc 925', weight: '1.5g' },
-  { id: 6, name: 'Bông tai Lệ', category: 'earring', price: 790000, stock: 0, image: 'images/earring-2.svg',
-    desc: 'Bông tai thả hình giọt dài, chuyển động nhẹ nhàng theo từng nhịp bước.', material: 'Bạc 925', weight: '2.2g' },
-  { id: 7, name: 'Lắc tay Mây', category: 'bracelet', price: 990000, stock: 18, image: 'images/bracelet-1.svg',
-    desc: 'Lắc tay xích mảnh với khóa tôm hùm, có thể đeo riêng hoặc xếp lớp.', material: 'Bạc 925', weight: '4.0g' },
-  { id: 8, name: 'Lắc tay Gió', category: 'bracelet', price: 1190000, stock: 10, image: 'images/bracelet-2.svg',
-    desc: 'Lắc tay bản vừa, bề mặt bóng gương, mang lại vẻ sang trọng tinh tế.', material: 'Bạc 925', weight: '5.2g' }
+  {
+    id: 1,
+    code: 'A01',
+    name: 'Vòng tay bạc mảnh TĨNH',
+    category: 'bracelet',
+    price: 250000,
+    stock: 20,
+    image: 'images/bracelet-1.svg',
+    desc: 'Thiết kế dạng dây mảnh, ít chi tiết trang trí, tạo vẻ thanh lịch và dễ phối cùng đồng hồ hoặc phụ kiện khác.',
+    material: 'Bạc 925',
+    weight: 'Free size'
+  },
+  {
+    id: 2,
+    code: 'A02',
+    name: 'Vòng tay hình học TĨNH',
+    category: 'bracelet',
+    price: 300000,
+    stock: 15,
+    image: 'images/bracelet-2.svg',
+    desc: 'Vòng tay có một chi tiết hình học nhỏ làm điểm nhấn, giữ tổng thể gọn và cân đối.',
+    material: 'Bạc 925',
+    weight: 'Free size'
+  },
+  {
+    id: 3,
+    code: 'A03',
+    name: 'Vòng tay chuỗi thanh lịch TĨNH',
+    category: 'bracelet',
+    price: 350000,
+    stock: 15,
+    image: 'images/bracelet-1.svg',
+    desc: 'Kết cấu chuỗi với các mắt nối nhỏ, tạo điểm nhấn từ cấu trúc sản phẩm thay vì họa tiết cầu kỳ.',
+    material: 'Bạc 925',
+    weight: 'Free size'
+  },
+  {
+    id: 4,
+    code: 'N01',
+    name: 'Dây chuyền bạc mảnh TĨNH',
+    category: 'necklace',
+    price: 250000,
+    stock: 20,
+    image: 'images/necklace-1.svg',
+    desc: 'Dây chuyền không có mặt trang trí, tập trung vào sự đơn giản của kết cấu dây.',
+    material: 'Bạc 925',
+    weight: '45cm'
+  },
+  {
+    id: 5,
+    code: 'N02',
+    name: 'Dây chuyền mặt hình học TĨNH',
+    category: 'necklace',
+    price: 300000,
+    stock: 15,
+    image: 'images/necklace-2.svg',
+    desc: 'Dây chuyền có mặt hình tròn hoặc hình học nhỏ, tạo điểm nhấn vừa phải.',
+    material: 'Bạc 925',
+    weight: '45cm'
+  },
+  {
+    id: 6,
+    code: 'N03',
+    name: 'Dây chuyền mặt thanh TĨNH',
+    category: 'necklace',
+    price: 350000,
+    stock: 15,
+    image: 'images/necklace-1.svg',
+    desc: 'Dây chuyền có mặt dạng thanh dài, thiết kế tinh gọn và dễ phối với trang phục.',
+    material: 'Bạc 925',
+    weight: '50cm'
+  },
+  {
+    id: 7,
+    code: 'DIY01',
+    name: 'Bộ tự phối vòng tay TĨNH',
+    category: 'diy',
+    price: 390000,
+    stock: 30,
+    image: 'images/bracelet-1.svg',
+    desc: 'Cho phép khách hàng tự phối hợp thành phần dây, hạt, khóa nối và hoàn thiện vòng tay theo hướng dẫn.',
+    material: 'Bạc 925 và phụ kiện',
+    weight: 'Tự điều chỉnh'
+  },
+  {
+    id: 8,
+    code: 'DIY02',
+    name: 'Bộ tự thiết kế dây chuyền TĨNH',
+    category: 'diy',
+    price: 420000,
+    stock: 25,
+    image: 'images/necklace-2.svg',
+    desc: 'Tạo cơ hội cho khách hàng lựa chọn cách kết hợp các thành phần dây nền, mặt trang trí trong phạm vi bộ sản phẩm.',
+    material: 'Bạc 925 và phụ kiện',
+    weight: 'Tự điều chỉnh'
+  }
 ];
 
-/* Sản phẩm: ưu tiên dữ liệu do quản trị viên chỉnh sửa (lưu trong trình duyệt),
-   nếu chưa có thì dùng danh sách mặc định ở trên. */
 function loadProducts() {
   try {
     const saved = JSON.parse(localStorage.getItem('products'));
-    if (Array.isArray(saved)) return saved;
+    if (Array.isArray(saved) && saved.length > 0) return saved;
   } catch (e) { /* bỏ qua */ }
   return DEFAULT_PRODUCTS.map(p => ({ ...p }));
 }

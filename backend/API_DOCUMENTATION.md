@@ -11,14 +11,20 @@ Hệ thống API được thiết kế dựa trên CSDL SQL Server `TinhJewelryD
 
 | Nhóm API | Method | Endpoint | Chức năng | Stored Procedure / Bảng liên quan |
 | :--- | :--- | :--- | :--- | :--- |
-| **1. Lấy sản phẩm** | `GET` | `/api/products` | Lấy danh sách sản phẩm (hỗ trợ lọc danh mục Vòng tay, Dây chuyền, DIY) | `sp_GetAllProducts`, bảng `Product`, `Category`, `Product_Image` |
+| **1. Sản phẩm (CRUD)** | `GET` | `/api/products` | Lấy danh sách sản phẩm (hỗ trợ lọc danh mục Vòng tay, Dây chuyền, DIY) | `sp_GetAllProducts`, bảng `Product`, `Category`, `Product_Image` |
 | | `GET` | `/api/products/:id` | Lấy chi tiết 1 sản phẩm kèm ảnh | Bảng `Product`, `Product_Image` |
 | | `GET` | `/api/products/search?keyword=...` | Tìm kiếm sản phẩm theo tên, mã hoặc danh mục | `sp_SearchProduct` |
-| **2. Nhập / Đăng ký** | `POST` | `/api/auth/register` | **Đăng ký tài khoản khách hàng** mới | `sp_RegisterCustomer`, bảng `Customer` |
+| | `POST` | `/api/products` | **[Admin] Thêm / Nhập sản phẩm mới** vào hệ thống & kho | Bảng `Product`, `Product_Image`, `InventoryLog` |
+| | `PUT` | `/api/products/:id` | **[Admin] Sửa thông tin sản phẩm** (giá, tên, mô tả, ảnh,...) | Bảng `Product`, `Product_Image` |
+| | `DELETE`| `/api/products/:id` | **[Admin] Xóa sản phẩm** (hoặc chuyển Ngừng kinh doanh) | Bảng `Product`, `Product_Image` |
+| | `PATCH`| `/api/products/:id/stock` | **[Admin] Cập nhật nhanh số lượng tồn kho** | Bảng `Product` |
+| **2. Xác thực (Auth)** | `POST` | `/api/auth/register` | **Đăng ký tài khoản khách hàng** mới | `sp_RegisterCustomer`, bảng `Customer` |
 | | `POST` | `/api/auth/login` | Đăng nhập tài khoản khách hàng (sinh JWT token) | Bảng `Customer` |
-| | `POST` | `/api/products` | **Nhập / Đăng ký sản phẩm mới** vào hệ thống & kho | Bảng `Product`, `Product_Image`, `InventoryLog` |
-| **3. Lưu đơn hàng** | `POST` | `/api/orders` | **Lưu đơn hàng mới** (kiểm tra tồn kho, trừ kho, ghi log) | `sp_CreateOrder`, bảng `Order`, `OrderItem`, `InventoryLog`, `Payment` |
+| **3. Đơn hàng & Duyệt đơn** | `POST` | `/api/orders` | **Lưu đơn hàng mới** từ khách (kiểm tra tồn kho, trừ kho, ghi log) | `sp_CreateOrder`, bảng `Order`, `OrderItem`, `InventoryLog`, `Payment` |
+| | `GET` | `/api/orders` | **[Admin] Lấy toàn bộ đơn hàng** (hỗ trợ lọc theo trạng thái) | Bảng `[Order]`, `OrderItem`, `Customer` |
+| | `GET` | `/api/orders/stats` | **[Admin] Thống kê Dashboard** (Doanh thu, tổng đơn, chờ duyệt, sắp hết hàng) | Bảng `[Order]`, `Product` |
 | | `GET` | `/api/orders/:id` | Xem chi tiết thông tin đơn hàng và danh sách món | Bảng `[Order]`, `OrderItem`, `Product` |
+| | `PUT` | `/api/orders/:id/status` | **[Admin] DUYỆT ĐƠN HÀNG** (Đã xác nhận, Đang giao, Đã giao, Đã hủy) | Bảng `[Order]`, `Product` (hoàn kho nếu hủy) |
 | | `GET` | `/api/orders/customer/:customerId`| Xem lịch sử các đơn hàng của 1 khách hàng | Bảng `[Order]` |
 
 ---

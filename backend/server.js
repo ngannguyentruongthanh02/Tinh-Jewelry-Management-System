@@ -34,15 +34,21 @@ app.get('/', (req, res) => {
         getAll: 'GET /api/products',
         getDetail: 'GET /api/products/:id',
         search: 'GET /api/products/search?keyword=...',
-        registerProduct: 'POST /api/products (Nhập/Đăng ký sản phẩm mới)'
+        registerProduct: 'POST /api/products (Thêm sản phẩm mới)',
+        updateProduct: 'PUT /api/products/:id (Sửa thông tin sản phẩm)',
+        deleteProduct: 'DELETE /api/products/:id (Xóa sản phẩm)',
+        updateStock: 'PATCH /api/products/:id/stock (Cập nhật nhanh tồn kho)'
       },
       auth: {
         register: 'POST /api/auth/register (Đăng ký tài khoản khách hàng)',
         login: 'POST /api/auth/login (Đăng nhập tài khoản khách hàng)'
       },
       orders: {
-        create: 'POST /api/orders (Lưu đơn hàng mới)',
+        getAll: 'GET /api/orders (Lấy tất cả đơn hàng cho Admin)',
+        getStats: 'GET /api/orders/stats (Thống kê đơn hàng và doanh thu)',
+        create: 'POST /api/orders (Lưu đơn hàng mới từ khách hàng)',
         getDetail: 'GET /api/orders/:id (Xem chi tiết đơn hàng)',
+        updateStatus: 'PUT /api/orders/:id/status (Duyệt / Cập nhật trạng thái đơn hàng)',
         getByCustomer: 'GET /api/orders/customer/:customerId (Xem lịch sử đơn của khách)'
       }
     }
